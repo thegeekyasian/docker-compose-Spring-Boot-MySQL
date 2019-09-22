@@ -1,0 +1,27 @@
+version: '2.1'
+services:
+  ekar-mysql:
+    container_name: thegeekyasian-mysql
+    image: 'mysql/mysql-server:5.7'
+    volumes:
+      - ./dbdata:/var/lib/mysql
+    environment:
+      MYSQL_DATABASE: thegeekyasian
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_ROOT_HOST: '%'
+    ports:
+      - '3301:3306'
+    restart: always
+  ekar-app:
+    image: thegeekyasian-spring-boot-app
+    build:
+      context: ./spring-boot-app
+      dockerfile: Dockerfile
+    ports:
+      - '8087:8080'
+    volumes:
+      - /data/thegeekyasian-spring-boot-app
+    depends_on:
+      ekar-mysql:
+        condition: service_healthy
+
